@@ -1,0 +1,122 @@
+<html>
+	<head>
+		<title>Dice Game</title>
+		<style>
+		body{
+			background-color:black;
+			color:white;
+		}
+		.rules{
+			border: 5px solid white;
+		}
+		.rules h4{
+			text-align:center;
+		}
+		.game-screen{
+			margin-top:50px;
+			border: 5px solid white;
+			padding:20px 20px;
+			font-size:30px;
+			height:325px;
+		}
+		.score{
+			text-align:center;
+		}
+		.no-of-attempts{
+			float:left;
+		}
+		.roller{
+			float:right;
+		}
+		.reset-button{
+			padding:175px 0 0 46%;
+		}
+		input, button{
+			width:100px;
+			height:30px;
+		}
+		</style>
+	</head>
+	<body>
+		<div class="rules">
+		<h4>RULES:</h4>
+		<ol>
+			<li>To start playing hit RESET</li>
+			<li>Objective: Get a score of 100 to win within 10 attempts by rolling the dice</li>
+			<li>Whatever you roll is added to your score</li>
+			<li>If you roll a number 4 or less you pay out a penalty of 10 points</li>
+			<li>If you roll a number 9 or more you earn a bonus of 10 points</li>
+			<li>If you have 10 points or less you cannot get penalized</li>
+			<li>If you have 90 points or more you cannot get bonus</li>
+		</ol>
+		</div>
+		<div class="game-screen">
+			<div class="score">
+				<p>SCORE:</p>
+				<input class="score-screen" type="text" value="0" disabled>
+			</div>
+			<div class="no-of-attempts">
+				<p>Number of attempts left:</p>
+				<input class="attempts-screen" type="text" value="10" disabled>
+			</div>
+			<div class="roller">
+				<p>Dice:</p>
+				<input class="roll-screen" type="text" value="12" disabled>
+				<button class="roll">ROLL</button>
+			</div>
+			<div class="reset-button">
+				<button class="reset">RESET</button>
+			</div>
+		</div>
+		<script>
+			function update_screen(screen,value){
+				document.querySelector(screen).value=value;
+			}
+			document.querySelector(".reset").addEventListener("click", ()=> reset());
+			function reset(){
+				update_screen(".score-screen",0);
+				update_screen(".attempts-screen",10);
+				update_screen(".roll-screen",12);
+			}
+			document.querySelector(".roll").addEventListener("click", ()=> roll());
+			function roll(){
+			
+				let roll_result=Math.ceil(1+Math.random()*11);
+				update(roll_result);
+			}
+			function update(value){
+				update_screen(".roll-screen",value);
+				let attempts=Number(document.querySelector(".attempts-screen").value),score=Number(document.querySelector(".score-screen").value);
+				attempts-=1;
+				if(attempts>=0&&score<100){
+					update_screen(".attempts-screen",attempts);
+					let extra;
+					if(score<10&&value<=4||score>90&&value<=9){
+						extra=0;
+					}
+					else if(value<=4){
+						alert("Oops, you earned a penalty");
+						extra=-10;
+					}
+					else if(value>=9){
+						alert("Yay, you earned a bonus");
+						extra=10;
+					}
+					else
+						extra=0;
+					score+=extra+value;
+					update_screen(".score-screen",score);	
+					if(attempts>0&&score>=100){
+						alert("You WIN");
+					}
+					if(attempts===0){
+						if(score>=100)
+							alert("You WIN");
+						else
+							alert("You LOSE,try again");
+					}	
+				}
+			}
+		</script>
+	</body>
+</html>
